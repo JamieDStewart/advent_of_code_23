@@ -84,6 +84,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="source\day_01.cpp" />
+    <ClCompile Include="source\day_02.cpp" />
+    <ClCompile Include="source\day_03.cpp" />
+    <ClCompile Include="source\day_04.cpp" />
+    <ClCompile Include="source\day_05.cpp" />
     <ClCompile Include="source\main.cpp" />
   </ItemGroup>
   <ItemGroup>

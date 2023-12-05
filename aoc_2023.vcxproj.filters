@@ -5,7 +5,7 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Source Files\day_01">
+    <Filter Include="Source Files\day_source">
       <UniqueIdentifier>{cad6c1de-26fe-4536-99f5-9c0e8adf4652}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -14,7 +14,19 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\day_01.cpp">
-      <Filter>Source Files\day_01</Filter>
+      <Filter>Source Files\day_source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\day_02.cpp">
+      <Filter>Source Files\day_source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\day_03.cpp">
+      <Filter>Source Files\day_source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\day_04.cpp">
+      <Filter>Source Files\day_source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\day_05.cpp">
+      <Filter>Source Files\day_source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
