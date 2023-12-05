@@ -1,1 +1,0 @@
-C:\DEV\AdventOfCode\2023_cpp\x64\Debug\aoc_2023.exe
