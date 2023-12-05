@@ -7,11 +7,11 @@
 
 
 #include "days.h"
+#include "timer.h"
+#include "result.h"
 
-#include <algorithm>
 #include <fstream>
 #include <iostream>
-#include <numeric>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -147,7 +147,7 @@ namespace day_02
 		return sum_valid_game_ids;
 	}
 
-	uint32_t part2()
+	uint32_t part_2()
 	{
 		//work out powers of each set based off min cubes needed from sets.
 		uint32_t sum_game_power = {};
@@ -173,12 +173,16 @@ namespace day_02
 }
 
 
-void aoc::day_02()
+Result aoc::day_02()
 {
+	timer::start();
 	//read file input
 	day_02::read_input_from_file( "./data/day_02_input.txt" );
 
-	std::cout << "Part 1: Sum of valid games = " << day_02::part_1() << std::endl;
+	const uint32_t part_1_answer = day_02::part_1();
+	const uint32_t part_2_answer = day_02::part_2();
+	timer::stop();
 
-	std::cout << "Part 2: Sum of powers of games: " << day_02::part2() << std::endl;
+	return { std::string( " 2: Cubes in Bags" ), part_1_answer, part_2_answer, timer::get_elapsed_seconds() };
+
 }

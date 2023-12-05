@@ -7,6 +7,8 @@
 
 
 #include "days.h"
+#include "timer.h"
+#include "result.h"
 
 #include <algorithm>
 #include <fstream>
@@ -265,11 +267,15 @@ namespace day_05
 
 }
 
-void aoc::day_05()
+Result aoc::day_05()
 {
+	timer::start();
 	day_05::Seeds_Maps seed_n_maps = day_05::read_input_file( "./data/day_05_input.txt" );
 
-	std::cout << "Part 1: Lowest location number for input seed values is " << day_05::part_01( seed_n_maps ) << std::endl;
-	std::cout << "Part 2: Lowest location number for input seed values is " << day_05::part_02( seed_n_maps ) << std::endl;
+	const uint64_t part_1_answer = day_05::part_01( seed_n_maps );
+	const uint64_t part_2_answer = day_05::part_02( seed_n_maps );
+
+	timer::stop();
+	return { std::string( " 5: Mapping Ranges" ), part_1_answer, part_2_answer, timer::get_elapsed_seconds() };
 
 }

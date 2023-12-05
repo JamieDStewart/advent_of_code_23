@@ -7,11 +7,12 @@
 
 
 #include "days.h"
+#include "timer.h"
+#include "result.h"
 
 #include <algorithm>
 #include <fstream>
 #include <iostream>
-#include <numeric>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -118,15 +119,17 @@ namespace day_01
 	}
 }
 
-void aoc::day_01()
+Result aoc::day_01()
 {
+	timer::start();
 	//vector to store the total quantity of calories that an elf is carrying
 	std::vector< std::string > input_values;
 	//read file input
 	day_01::read_input_from_file( input_values );
 
 	const uint32_t part_1_calibration_values_sum = day_01::part_1( input_values );
-	std::cout << "Part 1: Calibration Values Sum = " << part_1_calibration_values_sum << std::endl;
 	const uint32_t part_2_calibration_values_sum = day_01::part_2( input_values );
-	std::cout << "Part 2: Calibration Values Sum = " << part_2_calibration_values_sum << std::endl;
+	timer::stop();
+
+	return { std::string(" 1: Trebuchet?!"), part_1_calibration_values_sum, part_2_calibration_values_sum, timer::get_elapsed_seconds()};
 }

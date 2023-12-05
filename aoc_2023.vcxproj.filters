@@ -8,6 +8,9 @@
     <Filter Include="Source Files\day_source">
       <UniqueIdentifier>{cad6c1de-26fe-4536-99f5-9c0e8adf4652}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\timer_source">
+      <UniqueIdentifier>{487a3cdc-064e-4a15-88d1-703e7de0c8e9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -28,9 +31,18 @@
     <ClCompile Include="source\day_05.cpp">
       <Filter>Source Files\day_source</Filter>
     </ClCompile>
+    <ClCompile Include="source\timer.cpp">
+      <Filter>Source Files\timer_source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\days.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\timer.h">
+      <Filter>Source Files\timer_source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\result.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

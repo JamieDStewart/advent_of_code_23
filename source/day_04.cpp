@@ -7,6 +7,8 @@
 
 
 #include "days.h"
+#include "result.h"
+#include "timer.h"
 
 #include <algorithm>
 #include <fstream>
@@ -120,12 +122,16 @@ namespace day_04
 
 }
 
-void aoc::day_04()
+Result aoc::day_04()
 {
+	timer::start();
 	std::vector<day_04::Card> cards = day_04::read_input_file( "./data/day_04_input.txt" );
 	
-	std::cout << "Part 1: Accumulated points on cards: " << day_04::part_1( cards ) << std::endl;
+	const uint64_t part_1_answer = day_04::part_1( cards );
+	const uint64_t part_2_answer = day_04::part_2( cards );
 
-	std::cout << "Part 2: Total scratch cards accumulated: " << day_04::part_2( cards ) << std::endl;
+	timer::stop();
+
+	return { std::string( " 4: Scratchies!" ), part_1_answer, part_2_answer, timer::get_elapsed_seconds() };
 	
 }

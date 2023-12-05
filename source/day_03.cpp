@@ -7,8 +7,9 @@
 
 
 #include "days.h"
+#include "timer.h"
+#include "result.h"
 
-#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <numeric>
@@ -164,12 +165,17 @@ namespace day_03
 
 }
 
-void aoc::day_03()
+Result aoc::day_03()
 {
+	timer::start();
 	const std::vector<std::string> schematic = day_03::read_input_file( "./data/day_03_input.txt" );
 	const std::vector<std::vector<day_03::Part>> parts = day_03::extract_parts( schematic );
 
-	std::cout << "Part 1: Sum of connected parts: " << day_03::part_1(schematic, parts) << std::endl;
-	std::cout << "Part 2: Sum of Gear Ratio Products: " << day_03::part_2( schematic, parts ) << std::endl;
+	const uint64_t part_1_answer = day_03::part_1(schematic, parts);
+	const uint64_t part_2_answer = day_03::part_2( schematic, parts );
+
+	timer::stop();
+
+	return { std::string( " 3: Engine Parts" ), part_1_answer, part_2_answer, timer::get_elapsed_seconds() };
 
 }
