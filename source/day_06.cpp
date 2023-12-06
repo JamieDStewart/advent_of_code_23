@@ -61,10 +61,8 @@ namespace day_06
 		return distance_travelled > record;
 	}
 
-	uint64_t find_win_time( Race race, bool seeking_minimum_time )
+	uint64_t find_win_time( Race race )
 	{
-		const int64_t increment = seeking_minimum_time ? -1: 1;
-
 		uint64_t low = 0;
 		uint64_t high = race.time;
 		//start in the middle
@@ -73,7 +71,7 @@ namespace day_06
 		while ( winning_time == 0 )
 		{
 			//is this the minimum winning condition?
-			const uint64_t neighbouring_time = mid_point + increment;
+			const uint64_t neighbouring_time = mid_point - 1;
 			const bool neighbouring_win = meets_win_conditions( neighbouring_time, race.time - neighbouring_time, race.distance );
 			const bool mid_point_win = meets_win_conditions( mid_point, race.time - mid_point, race.distance );
 			if ( !neighbouring_win && mid_point_win )
@@ -82,13 +80,11 @@ namespace day_06
 			}
 			else if ( !neighbouring_win && !mid_point_win ) //both losses move forward in time
 			{
-				low = (seeking_minimum_time) ? mid_point : low;
-				high = (seeking_minimum_time) ? high : mid_point;
+				low = mid_point;
 			}
 			else //both wins so look further towards beginning
 			{
-				low = (seeking_minimum_time) ? low : mid_point;
-				high = (seeking_minimum_time) ? mid_point : high;
+				high = mid_point ;
 			}
 			mid_point = (low + high) >> 1;
 			if ( mid_point == 0 || mid_point > race.time ) { break; }
@@ -106,8 +102,9 @@ namespace day_06
 		std::vector<uint64_t> num_ways_to_win = {};
 		for( const auto& race : races )
 		{
-			const uint64_t min_time = find_win_time( race, true );
-			const uint64_t max_time = find_win_time( race, false );
+			const uint64_t min_time = find_win_time( race );
+			//It's a symmetric curve so sub min from total time.
+			const uint64_t max_time = race.time - min_time;
 			const uint64_t opportunity_count = max_time - min_time +1;
 			num_ways_to_win.push_back( opportunity_count );
 		}
@@ -131,8 +128,9 @@ namespace day_06
 		rd >> race_distance;
 		Race race = { race_time, race_distance };
 
-		const uint64_t min_time = find_win_time( race, true );
-		const uint64_t max_time = find_win_time( race, false );
+		const uint64_t min_time = find_win_time( race );
+		//It's a symmetric curve so sub min from total time.
+		const uint64_t max_time = race.time - min_time;
 		const uint64_t opportunity_count = max_time - min_time + 1;
 		return opportunity_count;
 	}
