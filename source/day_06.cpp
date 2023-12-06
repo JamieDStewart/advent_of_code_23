@@ -92,6 +92,16 @@ namespace day_06
 		return winning_time;
 	}
 
+	uint64_t calc_winning_range( Race race )
+	{
+		//use quadratic formula to find point parabola crosses the x axis if we treat race time as b and c as race distance (+1 to beat the distance)
+		const double discriminant = sqrt( race.time * race.time - 4 * (race.distance + 1) );
+		//determinant is just 2 as a value resolves to 1.
+		const auto min = static_cast<uint64_t>(ceil((static_cast<double>(race.time) - discriminant)/2.0));
+		const auto max = static_cast<uint64_t>(floor( (static_cast<double>(race.time) + discriminant)/2.0 ));
+		return max - min + 1;
+	}
+
 	
 	uint64_t part_01( std::vector<Race> races )
 	{
@@ -102,11 +112,12 @@ namespace day_06
 		std::vector<uint64_t> num_ways_to_win = {};
 		for( const auto& race : races )
 		{
-			const uint64_t min_time = find_win_time( race );
-			//It's a symmetric curve so sub min from total time.
-			const uint64_t max_time = race.time - min_time;
-			const uint64_t opportunity_count = max_time - min_time +1;
-			num_ways_to_win.push_back( opportunity_count );
+			const uint64_t calc_opportunity_count = calc_winning_range( race );
+			//const uint64_t min_time = find_win_time( race );
+			////It's a symmetric curve so sub min from total time.
+			//const uint64_t max_time = race.time - min_time;
+			//const uint64_t opportunity_count = max_time - min_time +1;
+			num_ways_to_win.push_back( calc_opportunity_count );
 		}
 		return std::accumulate( num_ways_to_win.begin(), num_ways_to_win.end(), 1, std::multiplies<>() );
 	}
@@ -128,10 +139,12 @@ namespace day_06
 		rd >> race_distance;
 		Race race = { race_time, race_distance };
 
-		const uint64_t min_time = find_win_time( race );
-		//It's a symmetric curve so sub min from total time.
-		const uint64_t max_time = race.time - min_time;
-		const uint64_t opportunity_count = max_time - min_time + 1;
+		const uint64_t opportunity_count = calc_winning_range( race );
+
+		//const uint64_t min_time = find_win_time( race );
+		////It's a symmetric curve so sub min from total time.
+		//const uint64_t max_time = race.time - min_time;
+		//const uint64_t opportunity_count = max_time - min_time + 1;
 		return opportunity_count;
 	}
 
