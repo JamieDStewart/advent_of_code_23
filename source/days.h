@@ -9,5 +9,6 @@ namespace aoc
 	extern Result day_04();
 	extern Result day_05();
 	extern Result day_06();
+	extern Result day_07();
 		
 }

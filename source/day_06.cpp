@@ -1,8 +1,8 @@
 //\==============================================================================
-// Advent of code 2023 Day 5
-// Question: https://adventofcode.com/2023/day/5
-// Gist:  Seeds need to go in appropriate soil all about changing ranges until location is found
-// Input data: Starts with seed Id's then a series of values describing ranges
+// Advent of code 2023 Day 6
+// Question: https://adventofcode.com/2023/day/6
+// Gist:  Miniature Boat Races - beat the record it's a binary search parabol problem
+// Input data: Race durations and current distance records
 //\==============================================================================
 
 
