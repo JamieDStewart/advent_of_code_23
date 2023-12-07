@@ -21,7 +21,7 @@
 namespace day_07
 {
 	//as I'm a bit lazy remap card values to alphabet values to make sorting easier
-	const char map_card_to_alphabet_value( const char value )
+	constexpr char map_card_to_alphabet_value( const char value )
 	{
 		switch ( value )
 		{
@@ -111,10 +111,10 @@ namespace day_07
 					//get a copy of the hand as unique will shuffle this and original order is important
 					std::string unique_chars = hand;
 					//std unique will move only unique characters to the front of the string and returns an index to the end of the unique characters
-					std::sort( unique_chars.begin(), unique_chars.end() );
+					std::ranges::sort( unique_chars.begin(), unique_chars.end() );
 					const auto index = std::unique( unique_chars.begin(), unique_chars.end() );
 					unique_chars = unique_chars.substr( 0, index - unique_chars.begin() );
-					uint32_t unique_char_length = unique_chars.length();
+					const uint64_t unique_char_length = unique_chars.length();
 					//The length of unique chars will let us know if this is a 'high card' hand a single pair or five of a kind
 					Win_type win_type = {};
 					
@@ -140,7 +140,7 @@ namespace day_07
 		return hands;
 	}
 
-	uint64_t part_01( std::vector<Hand>& hands )
+	void sort_hands( std::vector<Hand>& hands )
 	{
 		//sort hands by order of strength by win type then by order of cards in hand
 		std::sort( hands.begin(), hands.end(), []( const Hand& a, const Hand& b )
@@ -151,6 +151,10 @@ namespace day_07
 					   }
 					   return a.type < b.type;
 				   } );
+	}
+
+	uint64_t accumulate_winnings( const std::vector<Hand>& hands )
+	{
 		uint64_t accumulated_winnings = {};
 		for ( int i = 0; i < hands.size(); ++i )
 		{
@@ -159,58 +163,51 @@ namespace day_07
 		return accumulated_winnings;
 	}
 
+	uint64_t part_01( std::vector<Hand>& hands )
+	{
+		sort_hands( hands );
+		return accumulate_winnings( hands );
+	}
+
 	uint64_t part_02( std::vector<Hand>& hands )
 	{
 		//introduction of the joker card. 'k' is now joker under the card re-mapping.
-		const char wildcard = 'k';
-		for ( auto& hand : hands )
+		constexpr char wildcard = map_card_to_alphabet_value('J' );
+		for ( auto& [cards, bid, type ] : hands )
 		{
-			//recalculate hand score if hand contains a 'k' character
-			if ( hand.cards.find( wildcard ) != std::string::npos )
+			//recalculate hand score if hand contains a wildcard character
+			if ( cards.find( wildcard ) != std::string::npos )
 			{
 				//we already had the win type, just need to promote as best as possible
-				if ( hand.type == WIN_TYPE::HIGH_CARD )
+				if ( type == WIN_TYPE::HIGH_CARD )
 				{
-					hand.type = WIN_TYPE::ONE_PAIR; // high card promotes to one pair
+					type = WIN_TYPE::ONE_PAIR; // high card promotes to one pair
 				}
-				else if ( hand.type == WIN_TYPE::ONE_PAIR )
+				else if ( type == WIN_TYPE::ONE_PAIR )
 				{
-					hand.type = WIN_TYPE::THREE_OF_KIND;
+					type = WIN_TYPE::THREE_OF_KIND;
 				}
-				else if ( hand.type == WIN_TYPE::TWO_PAIR )
+				else if ( type == WIN_TYPE::TWO_PAIR )
 				{
-					//depends on wildcard count on how promotion works 2 wildcards goes to 4 of a kind, 1 moves to full house
-					uint32_t wildcard_count = std::count( hand.cards.begin(), hand.cards.end(), wildcard );
-					hand.type = (wildcard_count>1) ? WIN_TYPE::FOUR_OF_KIND : WIN_TYPE::FULL_HOUSE;					
+					//depends on wildcard count on how promotion works 2 wild cards goes to 4 of a kind, 1 moves to full house
+					const uint32_t wildcard_count = std::count( cards.begin(), cards.end(), wildcard );
+					type = (wildcard_count>1) ? WIN_TYPE::FOUR_OF_KIND : WIN_TYPE::FULL_HOUSE;					
 				}
-				else if ( hand.type == WIN_TYPE::THREE_OF_KIND )
+				else if ( type == WIN_TYPE::THREE_OF_KIND )
 				{
-					hand.type = WIN_TYPE::FOUR_OF_KIND;
+					type = WIN_TYPE::FOUR_OF_KIND;
 				}
-				else if ( hand.type == WIN_TYPE::FULL_HOUSE || hand.type == WIN_TYPE::FOUR_OF_KIND )
+				else if ( type == WIN_TYPE::FULL_HOUSE || type == WIN_TYPE::FOUR_OF_KIND )
 				{
-					hand.type = WIN_TYPE::FIVE_OF_KIND; //if we have full house or four of a kind must promote to five of kind
+					type = WIN_TYPE::FIVE_OF_KIND; //if we have full house or four of a kind must promote to five of kind
 				}
 				//replace wildcard with 'a' this will help in sorting function, 
-				std::replace( hand.cards.begin(), hand.cards.end(), wildcard, 'a' );
+				std::ranges::replace( cards.begin(), cards.end(), wildcard, 'a' );
 			}
 		}
 
-		//sort hands by order of strength by win type then by order of cards in hand
-		std::sort( hands.begin(), hands.end(), []( const Hand& a, const Hand& b )
-				   {
-					   if ( a.type == b.type )
-					   {
-						   return a.cards < b.cards;
-					   }
-					   return a.type < b.type;
-				   } );
-		uint64_t accumulated_winnings = {};
-		for ( int i = 0; i < hands.size(); ++i )
-		{
-			accumulated_winnings += (i + 1) * hands[i].bid;
-		}
-		return accumulated_winnings;
+		sort_hands( hands );
+		return accumulate_winnings( hands );
 	}
 
 	
