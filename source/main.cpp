@@ -50,10 +50,10 @@ void print_heading_to_console()
 	print_x_spaces_console( 6 );
 	print_separator();
 	std::cout << "Part 2";
-	print_x_spaces_console( 6 );
+	print_x_spaces_console( 8 );
 	print_separator();
 	std::cout << "Time";
-	print_x_spaces_console( 9 );
+	print_x_spaces_console( 7 );
 	print_separator();
 	std::cout << std::endl;
 	print_break_to_console();	
@@ -89,10 +89,10 @@ void print_result(const Result& result )
 	print_x_spaces_console( 12 - get_spaces(result.part_1) );
 	print_separator();
 	std::cout << result.part_2;
-	print_x_spaces_console( 12 - get_spaces( result.part_2 ) );
+	print_x_spaces_console( 14 - get_spaces( result.part_2 ) );
 	print_separator();
 	std::cout << result.execution_time;
-	print_x_spaces_console( 13 - get_spaces( result.execution_time ) );
+	print_x_spaces_console( 11 - get_spaces( result.execution_time ) );
 	print_separator();
 }
 
