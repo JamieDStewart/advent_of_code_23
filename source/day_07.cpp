@@ -73,7 +73,7 @@ namespace day_07
 		uint32_t max_appearances = 0;
 		for ( const auto& c : unique_chars )
 		{
-			uint32_t appearances = std::count( hand.begin(), hand.end(), c );
+			auto appearances = static_cast<uint32_t>(std::count( hand.begin(), hand.end(), c ));
 			max_appearances = (appearances > max_appearances) ? appearances : max_appearances;
 		}
 		//
@@ -190,7 +190,7 @@ namespace day_07
 				else if ( type == WIN_TYPE::TWO_PAIR )
 				{
 					//depends on wildcard count on how promotion works 2 wild cards goes to 4 of a kind, 1 moves to full house
-					const uint32_t wildcard_count = std::count( cards.begin(), cards.end(), wildcard );
+					const auto wildcard_count = static_cast<uint32_t>(std::count( cards.begin(), cards.end(), wildcard ));
 					type = (wildcard_count>1) ? WIN_TYPE::FOUR_OF_KIND : WIN_TYPE::FULL_HOUSE;					
 				}
 				else if ( type == WIN_TYPE::THREE_OF_KIND )

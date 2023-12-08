@@ -9,7 +9,7 @@
 
 
 std::vector< Result( * )() > questions = { aoc::day_01, aoc::day_02, aoc::day_03, aoc::day_04, aoc::day_05, aoc::day_06,
-											aoc::day_07 };
+											aoc::day_07, aoc::day_08 };
 
 void print_break_to_console()
 {
@@ -66,7 +66,7 @@ int get_spaces( uint64_t value )
 	std::stringstream ss;
 	ss << value;
 	ss >> res_str;
-	return res_str.size();
+	return static_cast<int>(res_str.size());
 }
 
 int get_spaces( double value )
@@ -76,14 +76,14 @@ int get_spaces( double value )
 	std::stringstream ss;
 	ss << value;
 	ss >> res_str;
-	return res_str.size();
+	return static_cast<int>(res_str.size());
 }
 
 void print_result(const Result& result )
 {
 	print_separator();
 	std::cout << result.name;
-	print_x_spaces_console( 23 - result.name.size() );
+	print_x_spaces_console( 23 - static_cast<int>(result.name.size()) );
 	print_separator();
 	std::cout << result.part_1;
 	print_x_spaces_console( 12 - get_spaces(result.part_1) );

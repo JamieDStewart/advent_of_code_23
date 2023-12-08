@@ -56,7 +56,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
@@ -90,6 +90,7 @@
     <ClCompile Include="source\day_05.cpp" />
     <ClCompile Include="source\day_06.cpp" />
     <ClCompile Include="source\day_07.cpp" />
+    <ClCompile Include="source\day_08.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\timer.cpp" />
   </ItemGroup>

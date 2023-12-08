@@ -103,7 +103,7 @@ namespace day_06
 	}
 
 	
-	uint64_t part_01( std::vector<Race> races )
+	uint64_t part_01( const std::vector<Race>& races )
 	{
 		//To see how much margin of error you have, determine the number of ways you can beat the record in each race
 		//Initial thought is to utlilise a binary search to find the lowest point that satisfies
@@ -119,10 +119,10 @@ namespace day_06
 			//const uint64_t opportunity_count = max_time - min_time +1;
 			num_ways_to_win.push_back( calc_opportunity_count );
 		}
-		return std::accumulate( num_ways_to_win.begin(), num_ways_to_win.end(), 1, std::multiplies<>() );
+		return std::accumulate( num_ways_to_win.begin(), num_ways_to_win.end(), 1LLU, std::multiplies<>() );
 	}
 
-	uint64_t part_02( std::vector<Race> races )
+	uint64_t part_02( const std::vector<Race>& races )
 	{
 		//There was a kerning error - wouldn't you know it, lousy input.
 		//There is only one race, and one distance to beat so combine input into a single race.
