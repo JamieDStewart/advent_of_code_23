@@ -43,6 +43,9 @@
     <ClCompile Include="source\day_08.cpp">
       <Filter>Source Files\day_source</Filter>
     </ClCompile>
+    <ClCompile Include="source\day_09.cpp">
+      <Filter>Source Files\day_source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\days.h">
