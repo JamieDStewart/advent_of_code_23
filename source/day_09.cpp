@@ -21,11 +21,15 @@
 
 namespace day_09
 {
-	
-
-	std::vector<std::vector<int64_t>> read_input_file( std::string input_file )
+	struct Reading
 	{
-		std::vector<std::vector<int64_t>> readings = {};
+		std::vector<int64_t> reading;
+		std::vector<std::vector<int64_t>> differences;
+	};
+
+	std::vector<Reading> read_input_file( const std::string& input_file )
+	{
+		std::vector<Reading> readings = {};
 		std::string directions;
 		std::map<std::string, std::pair<std::string, std::string>> parent_children;
 		//file is a series of lines made up of hand info and bit amount
@@ -46,7 +50,22 @@ namespace day_09
 					{
 						reading.push_back( value );
 					}
-					readings.push_back( reading );
+					//generate differences for each reading vector
+					std::vector<std::vector<int64_t>> differences = {};
+					std::vector<int64_t> difference = reading;
+					int64_t accumulation_value = 0;
+					do
+					{
+						//use std::adjacent_difference to get the differences and substitute these into the current vector
+						std::adjacent_difference( difference.begin(), difference.end(), difference.begin() );
+						difference.erase( difference.begin() );
+						differences.push_back( difference );
+						accumulation_value = std::accumulate( difference.begin(), difference.end(), 0LL );
+
+					}
+					while ( accumulation_value != 0 );
+
+					readings.push_back( { reading, differences } );
 				}
 
 			}
@@ -56,25 +75,12 @@ namespace day_09
 	}
 
 
-	uint64_t part_01( std::vector<std::vector<int64_t>>& readings )
+	uint64_t part_01( std::vector<Reading>& readings )
 	{
 		//for each set of readings we need to get the next value in the sequence then accumulate these values
 		std::vector<int64_t> next_values_in_sequence = {};
-		for ( auto& reading : readings )
+		for ( auto& [reading, differences] : readings )
 		{
-			//for each starting vector produce a series of vectors that is their adjacent difference
-			std::vector<std::vector<int64_t>> differences = {};
-			std::vector<int64_t> difference = reading;
-			int64_t accumulation_value = 0;
-			do 
-			{				
-				//use std::adjacent_difference to get the differences and substitute these into the current vector
-				std::adjacent_difference( difference.begin(), difference.end(), difference.begin() );
-				difference.erase(difference.begin());
-				differences.push_back( difference );
-				accumulation_value = std::accumulate( difference.begin(), difference.end(), 0LL );
-
-			} while ( accumulation_value != 0 );
 			//we've now got the differences down to zero, so add the final value onto all final values
 			int64_t next_value_in_sequence = 0;
 			for( const auto& diff : differences )
@@ -86,26 +92,12 @@ namespace day_09
 		return std::accumulate(next_values_in_sequence.begin(), next_values_in_sequence.end(), 0LL );
 	}
 
-	uint64_t part_02( std::vector<std::vector<int64_t>>& readings )
+	uint64_t part_02( std::vector<Reading>& readings )
 	{
 		//for each set of readings we need to get the previous value in the sequence then accumulate these values
 		std::vector<int64_t> next_values_in_sequence = {};
-		for ( auto& reading : readings )
+		for ( auto& [reading, differences] : readings )
 		{
-			//for each starting vector produce a series of vectors that is their adjacent difference
-			std::vector<std::vector<int64_t>> differences = {};
-			std::vector<int64_t> difference = reading;
-			int64_t accumulation_value = 0;
-			do
-			{
-				//use std::adjacent_difference to get the differences and substitute these into the current vector
-				std::adjacent_difference( difference.begin(), difference.end(), difference.begin() );
-				difference.erase( difference.begin() );
-				differences.push_back( difference );
-				accumulation_value = std::accumulate( difference.begin(), difference.end(), 0LL );
-
-			}
-			while ( accumulation_value != 0 );
 			//we've now got the differences down to zero, iterate over the differences in reverse and subtract them from the initial difference value
 			int64_t next_value_in_sequence = 0;
 			for ( auto iter = differences.rbegin(); iter != differences.rend(); ++iter )
@@ -123,7 +115,7 @@ namespace day_09
 Result aoc::day_09()
 {
 	timer::start();
-	std::vector<std::vector<int64_t>> readings = day_09::read_input_file( "./data/day_09_input.txt" );
+	std::vector<day_09::Reading> readings = day_09::read_input_file( "./data/day_09_input.txt" );
 
 	const uint64_t part_1_answer = day_09::part_01( readings );
 	const uint64_t part_2_answer = day_09::part_02( readings );

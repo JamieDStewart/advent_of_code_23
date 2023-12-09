@@ -70,23 +70,16 @@ namespace day_08
 	{
 		//need to start at node 'AAA'
 		std::string current_node = "AAA";
-		std::string end_node = "ZZZ";
+		const std::string end_node = "ZZZ";
 		uint64_t steps = {};
 
 		while ( current_node != end_node )
 		{
 			
 			const std::pair<std::string, std::string> current_children = map.parent_children[current_node];
-			if ( const char direction = map.directions[steps % map.directions.length()]; direction == 'L' )
-			{
-				current_node = current_children.first;
-			}
-			else
-			{
-				current_node = current_children.second;
-			}
+			const char direction = map.directions[steps % map.directions.length()];
+			current_node = (direction == 'L') ? current_children.first : current_children.second;
 			++steps;
-
 		}
 		return steps;
 	}
