@@ -1,7 +1,7 @@
 //\==============================================================================
 // Advent of code 2023 Day 11
 // Question: https://adventofcode.com/2023/day/11
-// Gist:  Map of galaxies find manhattan distance
+// Gist:  Map of galaxies find Manhattan distance
 // Input data: a map of galaxies '#' and space '.'
 //\==============================================================================
 
@@ -14,7 +14,6 @@
 #include <fstream>
 #include <iostream>
 #include <map>
-#include <numeric>
 #include <string>
 #include <vector>
 
@@ -55,32 +54,43 @@ namespace day_11
 		return galaxy_locations;
 	}
 
-	std::vector<Galaxy_Location> adjust_for_empty_space( std::vector<Galaxy_Location>& galaxy_locations, uint64_t offset_distance )
+	void adjust_position( std::vector<Galaxy_Location>& galaxy_locations, const uint64_t offset_distance, const bool adjust_x )
 	{
-		std::vector<Galaxy_Location> adjusted_galaxies = {};
-		//need to adjust for empty column spaces
-		std::ranges::sort( galaxy_locations.begin(), galaxy_locations.end(), []( const Galaxy_Location& a, const Galaxy_Location& b )
-						   {
-								//sort based on x location
-								return a.x < b.x;
-						   } );
 		//iterate over galaxies if there is a difference of more than 1 between x position then increment x values
-		uint64_t offset = {};		
+		uint64_t offset = {};
 		// var explanation: cl == current_location, pl == previous_location
 		uint64_t pl = {};
-		for ( const auto& location : galaxy_locations )
+		for ( auto& [x, y] : galaxy_locations )
 		{
-			uint64_t cl = location.x + offset;
-			const uint64_t diff = std::max( cl, pl ) - std::min(cl, pl );
-			if ( diff > 1 )
+			uint64_t cl = (adjust_x) ? x + offset : y + offset;
+			if ( const uint64_t diff = std::max( cl, pl ) - std::min( cl, pl );  diff > 1 )
 			{
-				const uint64_t displacement = (diff > 1) ? (diff - 1) * (offset_distance - 1): 0LLU;
+				const uint64_t displacement =(diff - 1) * (offset_distance - 1);
 				offset += displacement;
 				cl += displacement;
 			}
 			pl = cl;
-			adjusted_galaxies.push_back( {cl, location.y} );
+			if( adjust_x)
+			{
+				x = cl;
+			}
+			else
+			{
+				y = cl;
+			}
 		}
+	}
+
+	std::vector<Galaxy_Location> adjust_for_empty_space( const std::vector<Galaxy_Location>& galaxy_locations, const uint64_t offset_distance )
+	{
+		std::vector<Galaxy_Location> adjusted_galaxies = galaxy_locations;
+		//need to adjust for empty column spaces
+		std::ranges::sort( adjusted_galaxies.begin(), adjusted_galaxies.end(), []( const Galaxy_Location& a, const Galaxy_Location& b )
+						   {
+								//sort based on x location
+								return a.x < b.x;
+						   } );
+		adjust_position( adjusted_galaxies, offset_distance, true );
 
 		//need to adjust for empty row spaces
 		std::ranges::sort( adjusted_galaxies.begin(), adjusted_galaxies.end(), []( const Galaxy_Location& a, const Galaxy_Location& b )
@@ -88,75 +98,41 @@ namespace day_11
 							   //sort based on x location
 							   return a.y < b.y;
 						   } );
-		//iterate over galaxies if there is a difference of more than 1 between x position then increment x values
-		offset = 0;
-		// var explanation: cl == current_location, pl == previous_location
-		pl = 0;
-		for ( auto& location : adjusted_galaxies )
-		{
-			uint64_t cl = location.y + offset;
-			const uint64_t diff = std::max( cl, pl ) - std::min( cl, pl );
-			if ( diff > 1 )
-			{
-				const uint64_t displacement = (diff > 1) ? (diff - 1) * (offset_distance -1) : 0LLU;
-				offset += displacement;
-				cl += displacement;
-			}
-			pl = cl;
-			location.y = cl;
-		}
+		adjust_position( adjusted_galaxies, offset_distance, false );
 
 		return adjusted_galaxies;
+	}
+
+	uint64_t accumulate_distances( const std::vector<Galaxy_Location>& locations )
+	{
+		uint64_t accumulated_distance = {};
+		for ( auto iter = locations.begin(); iter != locations.end(); ++iter )
+		{
+			const Galaxy_Location first = *iter;
+			for ( auto inner_iter = iter + 1; inner_iter != locations.end(); ++inner_iter )
+			{
+				const Galaxy_Location second = *inner_iter;
+				const uint64_t x_dist = std::max( first.x, second.x ) - std::min( first.x, second.x );
+				const uint64_t y_dist = std::max( first.y, second.y ) - std::min( first.y, second.y );
+				accumulated_distance += (x_dist + y_dist);
+			}
+		}
+		return accumulated_distance;
 	}
 	
 	uint64_t part_01( std::vector<Galaxy_Location>& galaxy_locations )
 	{
 		//adjust galaxies for an offset space of 1
-		std::vector<Galaxy_Location> adjusted_galaxies = adjust_for_empty_space( galaxy_locations, 2LLU );
-		//sort galaxies into pairs
-		std::vector<std::pair<Galaxy_Location, Galaxy_Location>> galaxy_pairs = {};
-		for( auto iter = adjusted_galaxies.begin(); iter != adjusted_galaxies.end(); ++iter )
-		{
-			for ( auto inner_iter = iter+1; inner_iter != adjusted_galaxies.end(); ++inner_iter )
-			{
-				galaxy_pairs.push_back( { *iter, *inner_iter } );
-			}
-		}
-		//now all galaxies are in pairs go through and get their Manhattan distance
-		std::vector<uint64_t> distances = {};
-		for( const auto& pair : galaxy_pairs )
-		{
-			const uint64_t x_dist = std::max(pair.first.x, pair.second.x) - std::min( pair.first.x, pair.second.x );
-			const uint64_t y_dist = std::max( pair.first.y, pair.second.y ) - std::min( pair.first.y, pair.second.y );
-			distances.push_back( x_dist + y_dist );
-		}
-
-		return std::accumulate(distances.begin(), distances.end(), 0LLU );
+		const std::vector<Galaxy_Location> adjusted_galaxies = adjust_for_empty_space( galaxy_locations, 2LLU );
+		return accumulate_distances( adjusted_galaxies );
+		
 	}
 
 	uint64_t part_02( std::vector<Galaxy_Location>& galaxy_locations )
 	{
 		//adjust galaxies for an offset space of 1
-		std::vector<Galaxy_Location> adjusted_galaxies = adjust_for_empty_space( galaxy_locations, 1000000LLU );
-		//sort galaxies into pairs
-		std::vector<std::pair<Galaxy_Location, Galaxy_Location>> galaxy_pairs = {};
-		for ( auto iter = adjusted_galaxies.begin(); iter != adjusted_galaxies.end(); ++iter )
-		{
-			for ( auto inner_iter = iter + 1; inner_iter != adjusted_galaxies.end(); ++inner_iter )
-			{
-				galaxy_pairs.push_back( { *iter, *inner_iter } );
-			}
-		}
-		//now all galaxies are in pairs go through and get their Manhattan distance
-		std::vector<uint64_t> distances = {};
-		for ( const auto& pair : galaxy_pairs )
-		{
-			const uint64_t x_dist = std::max( pair.first.x, pair.second.x ) - std::min( pair.first.x, pair.second.x );
-			const uint64_t y_dist = std::max( pair.first.y, pair.second.y ) - std::min( pair.first.y, pair.second.y );
-			distances.push_back( x_dist + y_dist );
-		}
-
-		return std::accumulate( distances.begin(), distances.end(), 0LLU );
+		const std::vector<Galaxy_Location> adjusted_galaxies = adjust_for_empty_space( galaxy_locations, 1000000LLU );
+		return accumulate_distances( adjusted_galaxies );
 	}
 
 
