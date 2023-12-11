@@ -93,6 +93,7 @@
     <ClCompile Include="source\day_08.cpp" />
     <ClCompile Include="source\day_09.cpp" />
     <ClCompile Include="source\day_10.cpp" />
+    <ClCompile Include="source\day_11.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\timer.cpp" />
   </ItemGroup>
