@@ -96,24 +96,27 @@ namespace day_11
 	uint64_t accumulate_distances( const Input_Map& input_map, uint64_t offset )
 	{
 		std::vector<uint64_t> distances = {};
+		Galaxy_Location first = {};
+
+		const auto calc_distance = [&first, &input_map, offset]( Galaxy_Location gl )
+		{
+			//get the actual position of the galaxy with offsets applied from look up
+			gl.x += (input_map.x_offsets[gl.x] * offset);
+			gl.y += (input_map.y_offsets[gl.y] * offset);
+			const uint64_t x_dist = std::max( first.x, gl.x ) - std::min( first.x, gl.x );
+			const uint64_t y_dist = std::max( first.y, gl.y ) - std::min( first.y, gl.y );
+			return x_dist + y_dist;
+		};
+
 		const auto& locations = input_map.locations;
 		for ( auto iter = locations.begin(); iter != locations.end(); ++iter )
 		{
-			Galaxy_Location first = *iter;
+			first = *iter;
 			//get the actual position of the galaxy with the x/y offsets applied 
 			first.x += (input_map.x_offsets[first.x] * offset);
 			first.y += (input_map.y_offsets[first.y] * offset);
 
-			std::transform( iter + 1, locations.end(), std::back_inserter( distances ),
-							[&first, &input_map, offset ]( Galaxy_Location gl )
-							{
-								//get the actual position of the galaxy with offsets applied from look up
-								gl.x += (input_map.x_offsets[gl.x] * offset);
-								gl.y += (input_map.y_offsets[gl.y] * offset);
-								const uint64_t x_dist = std::max( first.x, gl.x ) - std::min( first.x, gl.x );
-								const uint64_t y_dist = std::max( first.y, gl.y ) - std::min( first.y, gl.y );
-								return x_dist + y_dist;
-							} );
+			std::transform( iter + 1, locations.end(), std::back_inserter( distances ), calc_distance	 );
 		}			
 		return std::accumulate( distances.begin(), distances.end(),0LLU );
 	}
@@ -135,7 +138,7 @@ namespace day_11
 Result aoc::day_11()
 {
 	timer::start();
-	day_11::Input_Map galaxy_locations = day_11::read_input_file( "./data/day_11_input.txt" );
+	const day_11::Input_Map galaxy_locations = day_11::read_input_file( "./data/day_11_input.txt" );
 
 	const uint64_t part_1_answer = day_11::part_01( galaxy_locations );
 
