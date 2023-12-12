@@ -9,7 +9,7 @@
 
 
 std::vector< Result( * )() > questions = { aoc::day_01, aoc::day_02, aoc::day_03, aoc::day_04, aoc::day_05, aoc::day_06,
-											aoc::day_07, aoc::day_08, aoc::day_09, aoc::day_10, aoc::day_11 };
+											aoc::day_07, aoc::day_08, aoc::day_09, aoc::day_10, aoc::day_11, aoc::day_12 };
 
 void print_break_to_console()
 {

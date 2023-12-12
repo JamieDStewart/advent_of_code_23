@@ -97,7 +97,7 @@ namespace day_11
 	{
 		std::vector<uint64_t> distances = {};
 		Galaxy_Location first = {};
-
+		//lambda function to calculate the Manhattan distance of the galaxies from each other
 		const auto calc_distance = [&first, &input_map, offset]( Galaxy_Location gl )
 		{
 			//get the actual position of the galaxy with offsets applied from look up

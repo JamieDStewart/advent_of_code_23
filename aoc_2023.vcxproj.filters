@@ -52,6 +52,9 @@
     <ClCompile Include="source\day_11.cpp">
       <Filter>Source Files\day_source</Filter>
     </ClCompile>
+    <ClCompile Include="source\day_12.cpp">
+      <Filter>Source Files\day_source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\days.h">
