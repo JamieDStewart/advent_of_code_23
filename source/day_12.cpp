@@ -56,14 +56,11 @@ namespace day_12
 			}			
 			file_input.close();
 		}
-
-		//we now have a vector of all galaxy locations and two vectors of offset amounts in x and y directions
-		//offset vectors are size of width and height of the galaxy map read in.
 		return spring_groups;
 	}
 
 	//forward declarations
-	uint64_t process_pattern( std::string springs, const std::vector<uint32_t>& groups, std::map< std::pair<std::string, std::vector<uint32_t>>, uint64_t>&  cached_values );
+	uint64_t process_pattern( std::string springs, const std::vector<uint32_t>& groups, std::map< uint64_t, uint64_t>&  cached_values );
 
 	enum class Spring_types : uint8_t
 	{
@@ -72,21 +69,21 @@ namespace day_12
 		unknown = '?'
 	};
 
-	uint64_t process_spring( std::string springs, const std::vector<uint32_t>& groups, std::map< std::pair<std::string, std::vector<uint32_t>>, uint64_t>&  cached_values )
+	uint64_t process_spring( std::string springs, const std::vector<uint32_t>& groups, std::map< uint64_t, uint64_t>&  cached_values )
 	{
 		//consume the first character of the string and continue
 		springs = springs.substr( 1 );
 		return process_pattern( springs, groups, cached_values );
 	}
 
-	uint64_t process_unknown( const std::string& springs, const std::vector<uint32_t>& groups, std::map< std::pair<std::string, std::vector<uint32_t>>, uint64_t>&  cached_values )
+	uint64_t process_unknown( const std::string& springs, const std::vector<uint32_t>& groups, std::map< uint64_t, uint64_t>&  cached_values )
 	{
 		//consume the first character of the string and continue
 		return process_pattern( '.' + springs.substr( 1 ), groups, cached_values ) + 
 			process_pattern( '#' + springs.substr( 1 ), groups, cached_values );
 	}
 
-	uint64_t process_broken_spring( std::string springs, std::vector<uint32_t> groups, std::map< std::pair<std::string, std::vector<uint32_t>>, uint64_t>&  cached_values )
+	uint64_t process_broken_spring( std::string springs, std::vector<uint32_t> groups, std::map< uint64_t, uint64_t>&  cached_values )
 	{
 		//take the group number of contiguous bad springs and remove that many dead springs
 		if ( groups.empty() ) { return 0; }
@@ -124,29 +121,33 @@ namespace day_12
 	}
 
 
-	uint64_t process_pattern( std::string springs, const std::vector<uint32_t>& groups, std::map< std::pair<std::string, std::vector<uint32_t>>, uint64_t>&  cached_values)
+	uint64_t process_pattern( std::string springs, const std::vector<uint32_t>& groups, std::map< uint64_t, uint64_t>&  cached_values)
 	{
-		//make hash key
-		const std::pair<std::string, std::vector<uint32_t>> key = std::make_pair( springs, groups );
-		if( const auto search = cached_values.find( key ); search == cached_values.end() )
+		if ( springs.empty() )
 		{
-			if ( springs.empty() )
-			{
-				//we have exhausted this string if we used up all the groupings then this is good
-				return groups.empty() ? 1 : 0;
-			}
+			//we have exhausted this string if we used up all the groupings then this is good
+			return groups.empty() ? 1 : 0;
+		}
+		//make hash key
+		std::stringstream ss = {};
+		ss << springs << springs.length() << groups.size();
+		const std::string key = ss.str();
+		const uint64_t hash_key = std::hash<std::string>{}(key);
+		if( const auto search = cached_values.find( hash_key ); search == cached_values.end() )
+		{
+			
 
 			switch ( auto st = static_cast<Spring_types>(springs[0]); st )
 			{
 			case Spring_types::good:
-				cached_values[key] = process_spring( springs, groups, cached_values ); break;
+				cached_values[hash_key] = process_spring( springs, groups, cached_values ); break;
 			case Spring_types::bad:
-				cached_values[key] =  process_broken_spring( springs, groups, cached_values ); break;
+				cached_values[hash_key] =  process_broken_spring( springs, groups, cached_values ); break;
 			case Spring_types::unknown:
-				cached_values[key] =  process_unknown( springs, groups, cached_values ); break;
+				cached_values[hash_key] =  process_unknown( springs, groups, cached_values ); break;
 			}
 		}
-		return cached_values[key];		
+		return cached_values[hash_key];		
 	}
 
 	uint64_t part_01( const std::vector<Spring_Group>& spring_groups )
@@ -155,7 +156,7 @@ namespace day_12
 		
 		for( const auto& [spring, group] : spring_groups )
 		{
-			std::map< std::pair<std::string, std::vector<uint32_t>>, uint64_t> cached_values = {};
+			std::map< uint64_t, uint64_t> cached_values = {};
 			possibilities.push_back( process_pattern(spring, group, cached_values ) );
 		}
 
@@ -181,7 +182,7 @@ namespace day_12
 		
 		for ( const auto& [spring, group] : unwrapped )
 		{
-			std::map< std::pair<std::string, std::vector<uint32_t>>, uint64_t> cached_values = {};
+			std::map< uint64_t, uint64_t> cached_values = {};
 			possibilities.push_back( process_pattern( spring, group, cached_values ) );
 		}
 
@@ -195,11 +196,11 @@ namespace day_12
 Result aoc::day_12()
 {
 	timer::start();
-	const std::vector< day_12::Spring_Group> galaxy_locations = day_12::read_input_file( "./data/day_12_input.txt" );
+	const std::vector< day_12::Spring_Group> spring_groups = day_12::read_input_file( "./data/day_12_input.txt" );
 
-	const uint64_t part_1_answer = day_12::part_01( galaxy_locations );
+	const uint64_t part_1_answer = day_12::part_01( spring_groups );
 
-	const uint64_t part_2_answer = day_12::part_02( galaxy_locations );
+	const uint64_t part_2_answer = day_12::part_02( spring_groups );
 
 	timer::stop();
 	return { std::string( "12: Spring Permutations" ), part_1_answer, part_2_answer, timer::get_elapsed_seconds() };
