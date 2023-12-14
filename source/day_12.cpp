@@ -60,7 +60,7 @@ namespace day_12
 	}
 
 	//forward declarations
-	uint64_t process_pattern( std::string springs, const std::vector<uint32_t>& groups, std::map< uint64_t, uint64_t>&  cached_values );
+	uint64_t process_pattern( const Spring_Group& spring_group, uint64_t spring_index, uint64_t group_index, std::map< std::pair<uint64_t, uint64_t>, uint64_t>&  cached_values );
 
 	enum class Spring_types : uint8_t
 	{
@@ -69,31 +69,21 @@ namespace day_12
 		unknown = '?'
 	};
 
-	uint64_t process_spring( std::string springs, const std::vector<uint32_t>& groups, std::map< uint64_t, uint64_t>&  cached_values )
-	{
-		//consume the first character of the string and continue
-		springs = springs.substr( 1 );
-		return process_pattern( springs, groups, cached_values );
-	}
+	
 
-	uint64_t process_unknown( const std::string& springs, const std::vector<uint32_t>& groups, std::map< uint64_t, uint64_t>&  cached_values )
+	uint64_t process_broken_spring( const Spring_Group& spring_group, uint64_t spring_index, uint64_t group_index, std::map< std::pair<uint64_t, uint64_t>, uint64_t>&  cached_values )
 	{
-		//consume the first character of the string and continue
-		return process_pattern( '.' + springs.substr( 1 ), groups, cached_values ) + 
-			process_pattern( '#' + springs.substr( 1 ), groups, cached_values );
-	}
+		const auto& [springs, groups] = spring_group;
+		
+		if ( group_index >= groups.size() ) { return 0; }
+		const auto count = groups[group_index];
+		//increment the group index
+		++group_index;
 
-	uint64_t process_broken_spring( std::string springs, std::vector<uint32_t> groups, std::map< uint64_t, uint64_t>&  cached_values )
-	{
-		//take the group number of contiguous bad springs and remove that many dead springs
-		if ( groups.empty() ) { return 0; }
-		const auto count = groups[0];
-		//remove this group
-		groups.erase( groups.begin() );
 		uint64_t total = {};
-		if ( springs.size() >= count )
+		if ( springs.size() - spring_index >= count )
 		{
-			total = std::count_if( springs.begin(), springs.begin() + count, []( const char& c )
+			total = std::count_if( springs.begin() + spring_index, springs.begin() + spring_index + count, []( const char& c )
 								   {
 									   return '#' == c || '?' == c;
 								   } );
@@ -103,48 +93,59 @@ namespace day_12
 			//not enough dead springs to satisfy
 			return 0;
 		}
-		else if( springs.length() == count )
+		else if( springs.size() - spring_index == count )
 		{
 			//nothing left in this sequence of springs
-			return process_pattern( "", groups, cached_values );
+			return process_pattern( spring_group, spring_index + count , group_index, cached_values );
 		}
-		else if( springs[count] == '#' )
+		else if( springs[spring_index + count] == '#' )
 		{
 			//dead spring follows sequence not allowed
 			return 0;
 		}
 		else
 		{
-			return process_pattern( springs.substr( count + 1 ), groups, cached_values );
+			return process_pattern( spring_group, spring_index + count + 1, group_index, cached_values );
 		}
 
 	}
 
-
-	uint64_t process_pattern( std::string springs, const std::vector<uint32_t>& groups, std::map< uint64_t, uint64_t>&  cached_values)
+	uint64_t process_spring( const Spring_Group& spring_group, uint64_t spring_index, uint64_t group_index, std::map< std::pair<uint64_t, uint64_t>, uint64_t>&  cached_values )
 	{
-		if ( springs.empty() )
+		//consume the first character of the string and continue
+		return process_pattern( spring_group, spring_index+1, group_index, cached_values );
+	}
+
+	uint64_t process_unknown( const Spring_Group& spring_group, uint64_t spring_index, uint64_t group_index, std::map< std::pair<uint64_t, uint64_t>, uint64_t>&  cached_values )
+	{
+		//consume the first character of the string and continue
+		return process_pattern( spring_group, spring_index+1, group_index, cached_values ) +
+			process_broken_spring( spring_group, spring_index, group_index, cached_values );
+	}
+
+
+	uint64_t process_pattern( const Spring_Group& spring_group, uint64_t spring_index, uint64_t group_index, std::map< std::pair<uint64_t, uint64_t>, uint64_t>&  cached_values)
+	{
+		const auto& [springs, groups] = spring_group;
+		if ( spring_index >= springs.length() )
 		{
 			//we have exhausted this string if we used up all the groupings then this is good
-			return groups.empty() ? 1 : 0;
+			return group_index >= groups.size() ? 1 : 0;
 		}
 		//make hash key
-		std::stringstream ss = {};
-		ss << springs << springs.length() << groups.size();
-		const std::string key = ss.str();
-		const uint64_t hash_key = std::hash<std::string>{}(key);
+		const std::pair<uint64_t, uint64_t> hash_key = std::make_pair( spring_index, group_index );
 		if( const auto search = cached_values.find( hash_key ); search == cached_values.end() )
 		{
 			
 
-			switch ( auto st = static_cast<Spring_types>(springs[0]); st )
+			switch ( auto st = static_cast<Spring_types>(springs[spring_index]); st )
 			{
 			case Spring_types::good:
-				cached_values[hash_key] = process_spring( springs, groups, cached_values ); break;
+				cached_values[hash_key] = process_spring( spring_group, spring_index, group_index, cached_values ); break;
 			case Spring_types::bad:
-				cached_values[hash_key] =  process_broken_spring( springs, groups, cached_values ); break;
+				cached_values[hash_key] =  process_broken_spring( spring_group, spring_index, group_index,cached_values ); break;
 			case Spring_types::unknown:
-				cached_values[hash_key] =  process_unknown( springs, groups, cached_values ); break;
+				cached_values[hash_key] =  process_unknown( spring_group, spring_index, group_index, cached_values ); break;
 			}
 		}
 		return cached_values[hash_key];		
@@ -154,10 +155,10 @@ namespace day_12
 	{
 		std::vector<uint64_t> possibilities = {};
 		
-		for( const auto& [spring, group] : spring_groups )
+		for( const auto& spring_group : spring_groups )
 		{
-			std::map< uint64_t, uint64_t> cached_values = {};
-			possibilities.push_back( process_pattern(spring, group, cached_values ) );
+			std::map< std::pair<uint64_t, uint64_t>, uint64_t> cached_values = {};
+			possibilities.push_back( process_pattern( spring_group, 0, 0, cached_values ) );
 		}
 
 		return std::accumulate(possibilities.begin(), possibilities.end(), 0LLU );
@@ -180,14 +181,13 @@ namespace day_12
 		}
 		std::vector<uint64_t> possibilities = {};
 		
-		for ( const auto& [spring, group] : unwrapped )
+		for ( const auto& spring_group : unwrapped )
 		{
-			std::map< uint64_t, uint64_t> cached_values = {};
-			possibilities.push_back( process_pattern( spring, group, cached_values ) );
+			std::map< std::pair<uint64_t, uint64_t>, uint64_t> cached_values = {};
+			possibilities.push_back( process_pattern( spring_group, 0, 0, cached_values ) );
 		}
 
 		return std::accumulate( possibilities.begin(), possibilities.end(), 0LLU );
-		return 0LLU;
 	}
 
 
