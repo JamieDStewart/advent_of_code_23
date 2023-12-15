@@ -68,13 +68,14 @@ namespace day_15
 		return std::accumulate(hashed_steps.begin(), hashed_steps.end(), 0LLU );
 	}
 
-	struct Box
-	{
-		std::vector<std::pair< std::string, uint64_t>> lenses;
-	};
+	
 
 	uint64_t part_02( const std::vector<std::string>& steps )
 	{
+		struct Box
+		{
+			std::vector<std::pair< std::string, uint64_t>> lenses;
+		};
 		//there are 256 boxes
 		Box boxes[256] = {};
 		
