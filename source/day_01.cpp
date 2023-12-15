@@ -86,9 +86,12 @@ namespace day_01
 	 */
 	uint32_t part_2( std::vector<std::string>& input )
 	{
+		//Two vectors one of number words, the other of number digits. The indices of these vectors match up 
 		const std::vector<std::string> search_strings = { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
 		const std::vector<char> search_values = { '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-
+		//for each line in the input vector find number strings and swap their second character for a digital representation
+		//second digit is swapped for the case of where 'twone4one' is the input this will become 't2o1e4o1e' if the first
+		//character was modified this would be incorrectly modified to 'tw1ne41ne' giving an incorrect value.
 		for ( auto& line : input )
 		{
 			uint32_t index = 0;
@@ -97,14 +100,13 @@ namespace day_01
 				size_t location = line.find( number );
 				while( location != std::string::npos )
 				{
-					//replace the second character of this string with digit for that string
 					line[location+1] = search_values[index];
 					location = line.find( number, location+1 );
 				}
 				++index;
 			}			
 		}
-
+		//now that the string has been modified to contain the relevant digits just call part 1 to solve.
 		return part_1(input );
 	}
 }

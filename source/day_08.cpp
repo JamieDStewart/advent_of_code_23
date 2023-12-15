@@ -10,14 +10,14 @@
 #include "timer.h"
 #include "result.h"
 
-#include <algorithm>
+
 #include <fstream>
-#include <iostream>
 #include <map>
 #include <numeric>
-#include <sstream>
+#include <ranges>
 #include <string>
 #include <vector>
+
 
 namespace day_08
 {
@@ -47,16 +47,8 @@ namespace day_08
 					std::string left = line.substr( line.find_first_of( '(' ) + 1, 3 );
 					std::string right = line.substr( line.find_last_of( ')' ) - 3, 3 );
 					std::pair<std::string, std::string> branches = { left, right };
-					//just a test to make sure that the same key doesn't occur twice
-					if ( auto search = parent_children.find( key ); search == parent_children.end() )
-					{
-						//add pair into dictionary
-						parent_children[key] = branches;
-					}
-					else
-					{
-						std::cout << "Multiple of the same key!";
-					}
+					//add pair into dictionary
+					parent_children[key] = branches;
 				}
 	
 			}
@@ -74,8 +66,7 @@ namespace day_08
 		uint64_t steps = {};
 
 		while ( current_node != end_node )
-		{
-			
+		{			
 			const std::pair<std::string, std::string> current_children = map.parent_children[current_node];
 			const char direction = map.directions[steps % map.directions.length()];
 			current_node = (direction == 'L') ? current_children.first : current_children.second;
@@ -88,9 +79,8 @@ namespace day_08
 	{
 		//simultaneously start on all nodes that end in 'A' attempt to get to where all nodes end in 'Z'
 		std::vector<std::string> current_nodes = {};
-		for( const auto& single_node : map.parent_children )
+		for( const auto& key : map.parent_children | std::views::keys)
 		{
-			std::string key = single_node.first;
 			if ( key[2] == 'A' )
 			{
 				current_nodes.push_back( key );

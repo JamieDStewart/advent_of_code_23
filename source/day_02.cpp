@@ -33,10 +33,6 @@ namespace day_02
 		std::vector<RGB_set> sets;
 	};
 
-	std::vector<Game> g_games;
-
-
-
 	uint32_t get_game_id_from_string( const std::string& input )
 	{
 		const std::string digits = "0123456789";
@@ -93,9 +89,9 @@ namespace day_02
 		return sets;
 	}
 
-	void read_input_from_file( std::string filename )
+	std::vector<Game> read_input_from_file( std::string filename )
 	{
-
+		std::vector<Game> games = {};
 		//open the input file for and parse into a vector of games
 		std::ifstream file_input;
 		file_input.open( filename );
@@ -110,16 +106,17 @@ namespace day_02
 					//get the number sets for this game
 					const size_t game_data_start = line.find_first_of( ':' ) + 1;
 					const std::vector<RGB_set> game_sets = get_game_sets_from_string( line.substr( game_data_start ) );
-					g_games.push_back( { game_id, game_sets } );
+					games.push_back( { game_id, game_sets } );
 				}
 
 			}
 			//close the input file
 			file_input.close();
 		}
+		return games;
 	}
 
-	uint32_t part_1()
+	uint32_t part_1( const std::vector<Game>& games )
 	{
 		//bag is loaded with max 12 red, 13 green, 14 blue
 		constexpr uint32_t valid_red = 12;
@@ -127,7 +124,7 @@ namespace day_02
 		constexpr uint32_t valid_blue = 14;
 		//games that contain fewer  cubes than these values are valid
 		uint32_t sum_valid_game_ids = {};
-		for ( const auto& game : g_games )
+		for ( const auto& game : games )
 		{
 			bool is_valid = true;
 			for ( const auto& set : game.sets )
@@ -147,11 +144,11 @@ namespace day_02
 		return sum_valid_game_ids;
 	}
 
-	uint32_t part_2()
+	uint32_t part_2( const std::vector<Game>& games )
 	{
 		//work out powers of each set based off min cubes needed from sets.
 		uint32_t sum_game_power = {};
-		for ( const auto& game : g_games )
+		for ( const auto& game : games )
 		{
 			uint32_t min_red = {};
 			uint32_t min_green = {};
@@ -177,10 +174,10 @@ Result aoc::day_02()
 {
 	timer::start();
 	//read file input
-	day_02::read_input_from_file( "./input/day_02.txt" );
+	const std::vector<day_02::Game> games = day_02::read_input_from_file( "./input/day_02.txt" );
 
-	const uint32_t part_1_answer = day_02::part_1();
-	const uint32_t part_2_answer = day_02::part_2();
+	const uint32_t part_1_answer = day_02::part_1( games );
+	const uint32_t part_2_answer = day_02::part_2( games );
 	timer::stop();
 
 	return { std::string( " 2: Cubes in Bags" ), part_1_answer, part_2_answer, timer::get_elapsed_seconds() };
