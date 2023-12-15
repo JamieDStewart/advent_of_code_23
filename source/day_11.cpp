@@ -138,7 +138,7 @@ namespace day_11
 Result aoc::day_11()
 {
 	timer::start();
-	const day_11::Input_Map galaxy_locations = day_11::read_input_file( "./data/day_11_input.txt" );
+	const day_11::Input_Map galaxy_locations = day_11::read_input_file( "./input/day_11.txt" );
 
 	const uint64_t part_1_answer = day_11::part_01( galaxy_locations );
 

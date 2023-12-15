@@ -220,7 +220,7 @@ namespace day_13
 Result aoc::day_13()
 {
 	timer::start();
-	std::vector< day_13::AshMap> ash_maps = day_13::read_input_file( "./data/day_13_input.txt" );
+	std::vector< day_13::AshMap> ash_maps = day_13::read_input_file( "./input/day_13.txt" );
 
 	const uint64_t part_1_answer = day_13::part_01( ash_maps );
 

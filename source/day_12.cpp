@@ -196,7 +196,7 @@ namespace day_12
 Result aoc::day_12()
 {
 	timer::start();
-	const std::vector< day_12::Spring_Group> spring_groups = day_12::read_input_file( "./data/day_12_input.txt" );
+	const std::vector< day_12::Spring_Group> spring_groups = day_12::read_input_file( "./input/day_12.txt" );
 
 	const uint64_t part_1_answer = day_12::part_01( spring_groups );
 

@@ -40,3 +40,4 @@
 **/bin/
 # ignore input data during the advent
 **/data/
+**/input/

@@ -177,7 +177,7 @@ Result aoc::day_02()
 {
 	timer::start();
 	//read file input
-	day_02::read_input_from_file( "./data/day_02_input.txt" );
+	day_02::read_input_from_file( "./input/day_02.txt" );
 
 	const uint32_t part_1_answer = day_02::part_1();
 	const uint32_t part_2_answer = day_02::part_2();

@@ -17,5 +17,6 @@ namespace aoc
 	extern Result day_12();
 	extern Result day_13();
 	extern Result day_14();
+	extern Result day_15();
 		
 }

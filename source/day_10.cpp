@@ -209,7 +209,7 @@ namespace day_10
 Result aoc::day_10()
 {
 	timer::start();
-	day_10::Map map = day_10::read_input_file( "./data/day_10_input.txt" );
+	day_10::Map map = day_10::read_input_file( "./input/day_10.txt" );
 	//locate the main loop within the input data
 	std::vector<day_10::Map_Location> main_loop = locate_main_loop( map );
 

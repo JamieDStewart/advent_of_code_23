@@ -154,7 +154,7 @@ namespace day_06
 Result aoc::day_06()
 {
 	timer::start();
-	std::vector<day_06::Race> races = day_06::read_input_file( "./data/day_06_input.txt" );
+	std::vector<day_06::Race> races = day_06::read_input_file( "./input/day_06.txt" );
 
 	const uint64_t part_1_answer = day_06::part_01( races );
 	const uint64_t part_2_answer = day_06::part_02( races );

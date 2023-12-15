@@ -23,7 +23,7 @@ namespace day_01
 	{
 		//open the input file for reading
 		std::ifstream file_input;
-		file_input.open( "./data/day_01_input.txt" );
+		file_input.open( "./input/day_01.txt" );
 		if ( file_input.is_open() )
 		{
 			for ( std::string line; std::getline( file_input, line ); )

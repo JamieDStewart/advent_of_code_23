@@ -125,7 +125,7 @@ namespace day_04
 Result aoc::day_04()
 {
 	timer::start();
-	std::vector<day_04::Card> cards = day_04::read_input_file( "./data/day_04_input.txt" );
+	std::vector<day_04::Card> cards = day_04::read_input_file( "./input/day_04.txt" );
 	
 	const uint64_t part_1_answer = day_04::part_1( cards );
 	const uint64_t part_2_answer = day_04::part_2( cards );

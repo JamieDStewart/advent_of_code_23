@@ -168,7 +168,7 @@ namespace day_03
 Result aoc::day_03()
 {
 	timer::start();
-	const std::vector<std::string> schematic = day_03::read_input_file( "./data/day_03_input.txt" );
+	const std::vector<std::string> schematic = day_03::read_input_file( "./input/day_03.txt" );
 	const std::vector<std::vector<day_03::Part>> parts = day_03::extract_parts( schematic );
 
 	const uint64_t part_1_answer = day_03::part_1(schematic, parts);

@@ -216,7 +216,7 @@ namespace day_07
 Result aoc::day_07()
 {
 	timer::start();
-	std::vector<day_07::Hand> hands = day_07::read_input_file( "./data/day_07_input.txt" );
+	std::vector<day_07::Hand> hands = day_07::read_input_file( "./input/day_07.txt" );
 
 	const uint64_t part_1_answer = part_01(hands);
 	const uint64_t part_2_answer = part_02( hands );

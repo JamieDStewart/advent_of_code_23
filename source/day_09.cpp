@@ -115,7 +115,7 @@ namespace day_09
 Result aoc::day_09()
 {
 	timer::start();
-	std::vector<day_09::Reading> readings = day_09::read_input_file( "./data/day_09_input.txt" );
+	std::vector<day_09::Reading> readings = day_09::read_input_file( "./input/day_09.txt" );
 
 	const uint64_t part_1_answer = day_09::part_01( readings );
 	const uint64_t part_2_answer = day_09::part_02( readings );

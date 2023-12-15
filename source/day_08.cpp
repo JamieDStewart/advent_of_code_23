@@ -132,7 +132,7 @@ namespace day_08
 Result aoc::day_08()
 {
 	timer::start();
-	day_08::Map map = day_08::read_input_file( "./data/day_08_input.txt" );
+	day_08::Map map = day_08::read_input_file( "./input/day_08.txt" );
 
 	const uint64_t part_1_answer = part_01( map );
 	const uint64_t part_2_answer = part_02( map );

@@ -270,7 +270,7 @@ namespace day_05
 Result aoc::day_05()
 {
 	timer::start();
-	day_05::Seeds_Maps seed_n_maps = day_05::read_input_file( "./data/day_05_input.txt" );
+	day_05::Seeds_Maps seed_n_maps = day_05::read_input_file( "./input/day_05.txt" );
 
 	const uint64_t part_1_answer = day_05::part_01( seed_n_maps );
 	const uint64_t part_2_answer = day_05::part_02( seed_n_maps );

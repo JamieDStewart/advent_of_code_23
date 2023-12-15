@@ -212,7 +212,7 @@ namespace day_14
 Result aoc::day_14()
 {
 	timer::start();
-	std::vector<std::string> map = day_14::read_input_file( "./data/day_14_input.txt" );
+	std::vector<std::string> map = day_14::read_input_file( "./input/day_14.txt" );
 
 	const uint64_t part_1_answer = day_14::part_01( map );
 
