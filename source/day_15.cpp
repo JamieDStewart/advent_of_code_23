@@ -82,30 +82,19 @@ namespace day_15
 		{
 			//find the first instance of '=' or '-' in the step
 			std::string lens_id = step.substr( 0, step.find_first_of("-=" ));
-			uint64_t box_id = Holiday_ASCII_String_Helper( lens_id );
+			const uint64_t box_id = Holiday_ASCII_String_Helper( lens_id );
 			//if string contains a digit add it to the box if not remove the
+			auto& lenses = boxes[box_id].lenses;
+			auto lens = std::ranges::find( lenses, lens_id, &std::pair<std::string, uint64_t>::first );
+			
 			if( step[step.length()-1] == '-' )
 			{
-				auto& lenses = boxes[box_id].lenses;
-				auto lens = std::ranges::find( lenses, lens_id, &std::pair<std::string, uint64_t>::first );
-				if( lens != lenses.end() )
-				{
-					lenses.erase( lens );
-				}
+				if( lens != lenses.end() ) { lenses.erase( lens ); } // If the lens is in the box then remove it
 			}
 			else
 			{
-				auto& lenses = boxes[box_id].lenses;
-				auto lens = std::ranges::find( lenses, lens_id, &std::pair<std::string, uint64_t>::first );
-				if ( lens != lenses.end() )
-				{
-					//lense already in box replace lens value
-					lens->second = step[step.length() - 1] - '0';
-				}
-				else
-				{
-					boxes[box_id].lenses.emplace_back( std::make_pair( lens_id, step[step.length() - 1] - '0' ) );
-				}
+				if ( lens != lenses.end() ) { lens->second = step[step.length() - 1] - '0';	continue; } //lens already in box replace lens value
+				boxes[box_id].lenses.emplace_back( std::make_pair( lens_id, step[step.length() - 1] - '0' ) );
 			}
 		}
 		//accumulate the values in the boxes using the explained method
