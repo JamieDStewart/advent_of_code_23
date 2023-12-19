@@ -99,7 +99,7 @@ namespace day_14
 	{
 		std::vector<int32_t> movement_vector( map[0].length(), 0 );
 		
-		for ( int32_t r = map.size() - 1; r >= 0; --r )
+		for ( auto r = static_cast<int32_t>(map.size() - 1); r >= 0; --r )
 		{
 			int32_t y = r;
 			std::string& row = map[r];
@@ -124,7 +124,7 @@ namespace day_14
 		{
 			int32_t movement = 0;
 			//iterate over the row moving any rocks by the amount in the movement vector
-			for ( int32_t i = row.length() - 1; i >= 0; --i )
+			for ( auto i = static_cast<int32_t>(row.length() - 1); i >= 0; --i )
 			{
 				if ( row[i] == '.' ) { ++movement; continue; }	//increment the movement for this column
 				if ( row[i] == '#' ) { movement = 0; continue; }//reset the movement

@@ -233,9 +233,9 @@ namespace day_16
 		uint64_t sum_visited_squares = {};
 		for ( const auto& row : tile_map )
 		{
-			sum_visited_squares += std::accumulate( row.begin(), row.end(), 0, []( uint64_t total, uint8_t v )
+			sum_visited_squares += std::accumulate( row.begin(), row.end(), 0, []( const uint64_t total, const uint8_t v ) -> uint64_t
 													{
-														return total + (v != 0);
+														return total + static_cast<uint64_t>((v != 0));
 													} );
 		}
 		return sum_visited_squares;
